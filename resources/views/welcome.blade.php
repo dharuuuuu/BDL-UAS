@@ -79,10 +79,12 @@
                                 </select>
                             </div>
 
-                            <div class="col-sm-3 mb-3">
+                            <span class="col-sm-3 mb-3">
                                 <button type="submit" class="btn btn-primary mt-4">Search</button>
                                 <button type="submit" class="btn btn-warning mt-4" onclick="resetForm()">Reset</button>
-                            </div>
+                            </span>
+
+                            <a href="{{ route('employees.create') }}" class="btn btn-success btn-sm float-end mt-4 mb-3" style="padding: 10px 20px;">Add</a>
 
                             <script>
                                 function resetForm() {
@@ -108,25 +110,26 @@
                                 <th scope="col">Email</th>
                                 <th scope="col">Age</th>
                                 <th scope="col">Salary</th>
-                                <th scope="col">Join Date</th>
                                 <th scope="col">Position</th>
                                 <th scope="col">Gender</th>
+                                <th scope="col">Join Date</th>
+                                <th scope="col">Action</th>
                             </tr>
                         </thead>
                         <tbody>
+                            
                             @forelse ($employees as $employee)
                                 <tr>
-                                    <td>{{$employee->id}}</td>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{$employee->name}}</td>
                                     <td>{{$employee->email}}</td>
                                     <td>{{$employee->age}}</td>
                                     <td>{{$employee->salary}}</td>
-                                    <td>{{ \Carbon\Carbon::parse($employee->join_date)->format('Y-m-d') }}</td>
                                     <td>
                                         @if ($employee->position == 'Junior Web')
                                             <span class="badge bg-success w-100">Junior Web</span>
                                         @elseif ($employee->position == 'Senior Web')
-                                            <span class="badge bg-danger w-100">Senior Web</span>
+                                            <span class="badge bg-warning text-dark w-100">Senior Web</span>
                                         @else
                                             <span class="badge bg-dark w-100">Designer</span>
                                         @endif
@@ -135,8 +138,18 @@
                                         @if ($employee->gender == 'male')
                                             <span class="badge bg-primary w-100">Male</span>
                                         @else
-                                            <span class="badge bg-warning w-100">Female</span>
+                                            <span class="badge bg-danger w-100">Female</span>
                                         @endif
+                                    </td>
+                                    <td>{{ \Carbon\Carbon::parse($employee->join_date)->format('Y-m-d') }}</td>
+                                    <td>
+                                        <form method="post" action="{{ route('employees.destroy', $employee->id) }}">
+                                            @csrf
+                                            @method('DELETE')
+                                            <a href="{{ route('employees.show', $employee->id) }}" class="btn btn-primary btn-sm">View</a>
+                                            <a href="{{ route('employees.edit', $employee->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                            <input type="submit" class="btn btn-danger btn-sm" value="Delete" />
+                                        </form>
                                     </td>
                                 </tr>
                             @empty

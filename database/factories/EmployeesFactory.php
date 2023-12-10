@@ -23,7 +23,7 @@ class EmployeesFactory extends Factory
             'join_date' => $this->faker->dateTimeBetween('-1 years', 'now'),
             'salary' => $roundedNumber,
             'age' => rand(20,50),
-            'gender' => $this->faker->randomElement(['male', 'female']),
+            'gender' => $this->faker->randomElement(['Male', 'Female']),
             'position' => $this->faker->randomElement(['Junior Web', 'Senior Web', 'Designer']),
         ];
     }

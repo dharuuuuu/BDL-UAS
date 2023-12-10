@@ -9,7 +9,8 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $employees = Employees::query();
+        // $employees = Employees::query();
+        $employees = Employees::orderBy('id', 'desc');
 
         // filter by name
         $employees->when($request->name, function ($query) use ($request) {
@@ -78,7 +79,99 @@ class HomeController extends Controller
         $averageSalaryDesigner = number_format(Employees::where('position', 'Designer')->avg('salary'), 0);
            
         return view('welcome', ['employees' => $employees->paginate(1000), 'averageSalaryJuniorWeb' => $averageSalaryJuniorWeb, 'averageSalarySeniorWeb' => $averageSalarySeniorWeb, 'averageSalaryDesigner' => $averageSalaryDesigner]);
-        
+    }
 
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        return view('create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $employees = new Employees;
+
+        $employees->name = $request->name;
+        $employees->email = $request->email;
+        $employees->age = $request->age;
+        $employees->salary = $request->salary;
+        $employees->position = $request->position;
+        $employees->gender = $request->gender;
+        $employees->join_date = $request->join_date;
+
+        $employees->save();
+
+        return redirect()->route('employees.index')->with('success', 'Employees Added successfully.');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Employees  $employees
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $employees = Employees::findOrFail($id);
+        return view('show', compact('employees'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Employees  $employees
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        $employees = Employees::findOrFail($id);
+        return view('edit', compact('employees'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Employees  $employees
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Employees $employees, $id)
+    {
+        $employees = Employees::findOrFail($id);
+        $employees->name = $request->name;
+        $employees->email = $request->email;
+        $employees->age = $request->age;
+        $employees->salary = $request->salary;
+        $employees->position = $request->position;
+        $employees->gender = $request->gender;
+        $employees->join_date = $request->join_date;
+        $employees->save();
+
+        return redirect()->route('employees.index')->with('success', 'Employees Data has been updated successfully');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Employees  $employees
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Employees $employees, $id)
+    {
+        $employees = Employees::findOrFail($id);
+        $employees->delete();
+
+        return redirect()->route('employees.index')->with('success', 'Employees Data deleted successfully');
     }
 }
