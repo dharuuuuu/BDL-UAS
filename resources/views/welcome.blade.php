@@ -135,7 +135,7 @@
                                         @endif
                                     </td>
                                     <td>
-                                        @if ($employee->gender == 'male')
+                                        @if ($employee->gender == 'Male')
                                             <span class="badge bg-primary w-100">Male</span>
                                         @else
                                             <span class="badge bg-danger w-100">Female</span>
